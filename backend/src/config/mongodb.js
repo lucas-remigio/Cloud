@@ -1,7 +1,6 @@
 import { MongoClient } from "mongodb";
 
 const db = process.env.DATABASE_URI || "localhost";
-console.log(db);
 
 // initialize the mongodb client
 const client = new MongoClient(`mongodb://${db}:27017`);

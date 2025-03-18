@@ -12,20 +12,11 @@ export async function sendMessage(req, res) {
       });
     }
 
-    const { title, body } = message;
-
     // save the message on the database
-    await database.collection("messages").insertOne({ title, body });
-
-    const notification = {
-      message: {
-        title: title,
-        body: body,
-      },
-    };
+    await database.collection("messages").insertOne(message);
 
     res.status(200).json({
-      notification,
+      message,
     });
   } catch (error) {
     res.status(500).json({
@@ -33,5 +24,17 @@ export async function sendMessage(req, res) {
       error,
     });
     console.log("Error:", error);
+  }
+}
+
+export async function getMessages(req, res) {
+  try {
+    const messages = await database.collection("messages").find({}).toArray();
+    res.status(200).json({ messages });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error retrieving messages from database",
+      error,
+    });
   }
 }

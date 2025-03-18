@@ -1,4 +1,5 @@
 import { getNotificationOpenAI } from "../services/messageService.js";
+import database from "../config/mongodb.js";
 
 export async function sendMessage(req, res) {
   try {
@@ -12,6 +13,9 @@ export async function sendMessage(req, res) {
     }
 
     const { title, body } = message;
+
+    // save the message on the database
+    await database.collection("messages").insertOne({ title, body });
 
     const notification = {
       message: {

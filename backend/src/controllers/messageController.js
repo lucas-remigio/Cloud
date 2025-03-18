@@ -1,31 +1,31 @@
 import { getNotificationOpenAI } from "../services/messageService.js";
-import { Request, Response } from "express";
 
-export async function sendMessage(req: Request, res: Response) {
+export async function sendMessage(req, res) {
   try {
     const message = await getNotificationOpenAI();
 
     if (!message) {
       console.error("Failed to retrieve notification content from OpenAI.");
-      return;
+      return res.status(500).json({
+        message: "Error retrieving notification content from OpenAI.",
+      });
     }
 
     const { title, body } = message;
 
     const notification = {
-      notification: {
+      message: {
         title: title,
         body: body,
       },
     };
 
     res.status(200).json({
-      message: "Notifications sent",
-      results: notification,
+      notification,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving FCM tokens or sending messages",
+      message: "Error retrieving message from OpenAI",
       error,
     });
     console.log("Error:", error);

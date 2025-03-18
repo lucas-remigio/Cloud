@@ -8,13 +8,8 @@ const __dirname = path.dirname(__filename);
 
 const promptFilePath = path.resolve(
   __dirname,
-  "../prompts/promptGenerateNotification.txt"
+  "../prompts/promptGenerateMessage.txt"
 );
-
-interface MessageContent {
-  title: string;
-  body: string;
-}
 
 async function generateMessageOpenAI() {
   const prompt = fs.readFileSync(promptFilePath, "utf-8");
@@ -51,8 +46,8 @@ export async function getNotificationOpenAI(maxRetries = 5) {
 }
 
 // Helper function to parse JSON content
-function parseJsonFromMessage(message: string | null): MessageContent | null {
-  const jsonMatch = message?.match(/{[\s\S]*}/);
+function parseJsonFromMessage(message) {
+  const jsonMatch = message.match(/{[\s\S]*}/);
 
   if (!jsonMatch) return null;
 

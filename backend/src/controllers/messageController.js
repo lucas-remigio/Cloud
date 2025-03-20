@@ -12,6 +12,8 @@ export async function sendMessage(req, res) {
       });
     }
 
+    message.created_at = new Date();
+
     // save the message on the database
     await database.collection("messages").insertOne(message);
 

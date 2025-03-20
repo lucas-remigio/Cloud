@@ -80,8 +80,6 @@ function MessageList() {
     socketRef.current.addEventListener("message", (event) => {
       try {
         // Assuming the server sends a JSON encoded message
-        console.log(event);
-        console.log("Received WS message: ", event.data);
         const receivedMessage: Message = JSON.parse(event.data);
         console.log("Received WS message: ", receivedMessage);
         // Update state: Add the new message if it doesn't already exist

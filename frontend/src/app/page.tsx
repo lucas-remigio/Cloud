@@ -1,9 +1,9 @@
-import MessagesList from "./MessagesList";
+import Home from "./Home";
 
-export default function Home() {
+export default function HomePage() {
   return (
     <div>
-      <MessagesList />
+      <Home />
     </div>
   );
 }

@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Message, MessageCreation, MessageResponse } from "./message_types";
-import { backend_url, websocket_url } from "./connections";
+import { Message, MessageCreation, MessageResponse } from "../message_types";
+import { backend_url, websocket_url } from "../connections";
 
-function MessageList() {
+const Messages: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -157,6 +157,6 @@ function MessageList() {
       </div>
     </div>
   );
-}
+};
 
-export default MessageList;
+export default Messages;

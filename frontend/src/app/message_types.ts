@@ -16,4 +16,11 @@ export type MessageResponse = {
 export interface MoodResponse {
   feeling: string;
   feedback_message: string;
+  category: EmotionCategory;
+}
+export interface EmotionCategory {
+  _id: string;
+  name: string;
+  category: string;
+  description: string;
 }

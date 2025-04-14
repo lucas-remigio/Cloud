@@ -3,11 +3,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { EmotionCategory } from "@/app/message_types";
 
 export default function FeelingMessages() {
   const params = useParams();
   const feeling = params.feeling as string;
   const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [emotionCategory, setEmotionCategory] =
+    useState<EmotionCategory | null>(null);
 
   useEffect(() => {
     // Retrieve the feedback message from localStorage if available
@@ -15,55 +18,38 @@ export default function FeelingMessages() {
     if (storedFeedback) {
       setFeedbackMessage(storedFeedback);
     }
+    // Retrieve the user feeling from localStorage
+    const storedFeeling = localStorage.getItem("userFeeling");
+    if (storedFeeling) {
+      try {
+        const parsedFeeling = JSON.parse(storedFeeling);
+        setEmotionCategory(parsedFeeling);
+      } catch (error) {
+        console.error("Error parsing stored feeling:", error);
+      }
+    }
+
+    // Clear localStorage after retrieving the data
+    localStorage.removeItem("userFeeling");
+    localStorage.removeItem("feedbackMessage");
   }, []);
 
   // Function to determine the emotion category color
   const getEmotionColor = () => {
-    const lowerFeeling = feeling.toLowerCase();
+    if (!emotionCategory) return "bg-gray-100 border-gray-500 text-gray-700";
 
-    const lowEnergyNegative = [
-      "sad",
-      "lonely",
-      "depressed",
-      "heartbroken",
-      "hopeless",
-      "burned out",
-    ];
-    const lowEnergyUnmotivated = [
-      "unmotivated",
-      "procrastinating",
-      "overwhelmed",
-      "stuck",
-      "doubtful",
-      "bored",
-    ];
-    const highEnergyNegative = ["angry", "anxious", "stressed", "frustrated"];
-    const highEnergyPositive = [
-      "happy",
-      "excited",
-      "confident",
-      "grateful",
-      "inspired",
-      "in love",
-    ];
-
-    if (lowEnergyNegative.some((emotion) => lowerFeeling.includes(emotion))) {
-      return "bg-blue-100 border-blue-500 text-blue-700";
-    } else if (
-      lowEnergyUnmotivated.some((emotion) => lowerFeeling.includes(emotion))
-    ) {
-      return "bg-yellow-100 border-yellow-500 text-yellow-700";
-    } else if (
-      highEnergyNegative.some((emotion) => lowerFeeling.includes(emotion))
-    ) {
-      return "bg-red-100 border-red-500 text-red-700";
-    } else if (
-      highEnergyPositive.some((emotion) => lowerFeeling.includes(emotion))
-    ) {
-      return "bg-green-100 border-green-500 text-green-700";
+    switch (emotionCategory.category) {
+      case "blue":
+        return "bg-blue-100 border-blue-500 text-blue-700";
+      case "yellow":
+        return "bg-yellow-100 border-yellow-500 text-yellow-700";
+      case "red":
+        return "bg-red-100 border-red-500 text-red-700";
+      case "green":
+        return "bg-green-100 border-green-500 text-green-700";
+      default:
+        return "bg-gray-100 border-gray-500 text-gray-700";
     }
-
-    return "bg-gray-100 border-gray-500 text-gray-700";
   };
 
   return (
@@ -72,6 +58,11 @@ export default function FeelingMessages() {
         <h1 className="text-2xl font-bold mb-2">
           Feeling: {decodeURIComponent(feeling)}
         </h1>
+        {emotionCategory && (
+          <p className="text-sm mb-2">
+            Category: {emotionCategory.description}
+          </p>
+        )}
         {feedbackMessage && <p className="text-lg">{feedbackMessage}</p>}
       </div>
 

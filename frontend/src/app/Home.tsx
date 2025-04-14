@@ -46,11 +46,13 @@ const Home: React.FC = () => {
       setFeedback(data.feedback_message);
 
       // Store the mood data in localStorage for use in the chat room
-      localStorage.setItem("userFeeling", data.feeling);
+      localStorage.setItem("userFeeling", JSON.stringify(data.category));
       localStorage.setItem("feedbackMessage", data.feedback_message);
 
+      const feeling = data.category.name.toLowerCase();
+
       // Redirect to the specific feeling lobby
-      router.push(`/messages/${encodeURIComponent(data.feeling)}`);
+      router.push(`/messages/${encodeURIComponent(feeling)}`);
     } catch (error) {
       console.error("Error:", error);
       setFeedback(

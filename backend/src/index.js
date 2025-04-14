@@ -3,6 +3,7 @@ import cors from "cors";
 import "dotenv/config";
 import messageRoutes from "./routes/messageRoutes.js";
 import moodRoutes from "./routes/moodRoutes.js";
+import { initializeEmotions } from "./config/dbInit.js";
 
 const app = express();
 app.use(express.json());
@@ -12,6 +13,9 @@ app.use(
     methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
   })
 );
+
+// Initialize the emotions database
+await initializeEmotions();
 
 app.use("/api", messageRoutes);
 app.use("/api", moodRoutes);

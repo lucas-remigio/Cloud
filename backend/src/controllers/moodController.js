@@ -24,6 +24,7 @@ export async function sendMood(req, res) {
     }
 
     const message = await getMoodOpenAI(feeling);
+    console.log("Message from OpenAI:", message);
 
     if (!message) {
       console.error("Failed to retrieve mood content from OpenAI.");
@@ -35,6 +36,7 @@ export async function sendMood(req, res) {
     res.status(200).json({
       feeling: message.feeling,
       feedback_message: message.feedback_message,
+      category: message.category,
     });
   } catch (error) {
     res.status(500).json({

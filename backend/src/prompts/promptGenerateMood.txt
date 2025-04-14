@@ -6,18 +6,9 @@ The user says that he is feeling this way: {feeling}
 
 Requirements:
 • Feeling: Identify the user's emotional state from the following categories:
-  
-  🟦 Low-Energy, Negative Emotions:
-  - Sad, Lonely, Depressed, Heartbroken, Hopeless, Burned out
 
-  🟨 Low-Energy, Unmotivated States:
-  - Unmotivated, Procrastinating, Overwhelmed, Stuck, Doubtful, Bored
-
-  🟥 High-Energy, Negative Emotions:
-  - Angry, Anxious, Stressed, Frustrated
-
-  🟩 High-Energy, Positive States:
-  - Happy, Excited, Confident, Grateful, Inspired, In love
+{{emotions}}
+ 
 
 • Feedback Message: Provide a supportive message tailored to the identified feeling. Keep it concise (max 30 words).
 

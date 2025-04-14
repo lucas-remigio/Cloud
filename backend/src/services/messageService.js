@@ -11,8 +11,11 @@ const promptFilePath = path.resolve(
   "../prompts/promptGenerateMessage.txt"
 );
 
-async function generateMessageOpenAI() {
-  const prompt = fs.readFileSync(promptFilePath, "utf-8");
+async function generateMessageOpenAI(feeling) {
+  let prompt = fs.readFileSync(promptFilePath, "utf-8");
+
+  prompt = prompt.replace("{{feeling}}", feeling);
+  console.log(prompt);
 
   const completion = await openai.chat.completions.create({
     model: "gpt-4o-mini",
@@ -22,9 +25,9 @@ async function generateMessageOpenAI() {
   return completion.choices[0].message.content;
 }
 
-export async function getNotificationOpenAI(maxRetries = 5) {
+export async function getMessageOpenAI(category, maxRetries = 5) {
   for (let tries = 0; tries < maxRetries; tries++) {
-    const message = await generateMessageOpenAI();
+    const message = await generateMessageOpenAI(category);
     const parsedContent = parseJsonFromMessage(message);
 
     if (!parsedContent) {

@@ -1,9 +1,18 @@
-import { getNotificationOpenAI } from "../services/messageService.js";
+import { getMessageOpenAI } from "../services/messageService.js";
 import database from "../config/mongodb.js";
 
 export async function sendMessage(req, res) {
   try {
-    const message = await getNotificationOpenAI();
+    // get the category from the body
+    const { category } = req.body;
+
+    if (!category) {
+      return res.status(400).json({
+        message: "Category is required",
+      });
+    }
+
+    const message = await getMessageOpenAI(category);
 
     if (!message) {
       console.error("Failed to retrieve notification content from OpenAI.");
@@ -13,6 +22,7 @@ export async function sendMessage(req, res) {
     }
 
     message.created_at = new Date();
+    message.category = category;
 
     // save the message on the database
     await database.collection("messages").insertOne(message);
@@ -32,6 +42,30 @@ export async function sendMessage(req, res) {
 export async function getMessages(req, res) {
   try {
     const messages = await database.collection("messages").find({}).toArray();
+    res.status(200).json({ messages });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error retrieving messages from database",
+      error,
+    });
+  }
+}
+
+export async function getMessagesByCategory(req, res) {
+  try {
+    const { category } = req.params;
+
+    if (!category) {
+      return res.status(400).json({
+        message: "Category is required",
+      });
+    }
+
+    const messages = await database
+      .collection("messages")
+      .find({ category: { $regex: category, $options: "i" } })
+      .toArray();
+
     res.status(200).json({ messages });
   } catch (error) {
     res.status(500).json({

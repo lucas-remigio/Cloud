@@ -12,3 +12,8 @@ export type MessageCreation = {
 export type MessageResponse = {
   messages: Message[];
 };
+
+export interface MoodResponse {
+  feeling: string;
+  feedback_message: string;
+}

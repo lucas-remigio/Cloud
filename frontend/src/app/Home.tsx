@@ -3,10 +3,12 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { MoodResponse } from "./message_types";
 
 const Home: React.FC = () => {
   const [feelings, setFeelings] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -21,6 +23,8 @@ const Home: React.FC = () => {
       return;
     }
 
+    setIsLoading(true);
+
     try {
       const response = await fetch("http://localhost:3000/api/moods", {
         method: "POST",
@@ -30,16 +34,23 @@ const Home: React.FC = () => {
         body: JSON.stringify({ feeling: feelings }),
       });
 
+      setIsLoading(false);
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
 
-      const data = await response.json();
+      const data: MoodResponse = await response.json();
       console.log(data);
 
       setFeedback(data.feedback_message);
 
-      router.push("/messages");
+      // Store the mood data in localStorage for use in the chat room
+      localStorage.setItem("userFeeling", data.feeling);
+      localStorage.setItem("feedbackMessage", data.feedback_message);
+
+      // Redirect to the specific feeling lobby
+      router.push(`/messages/${encodeURIComponent(data.feeling)}`);
     } catch (error) {
       console.error("Error:", error);
       setFeedback(
@@ -62,9 +73,10 @@ const Home: React.FC = () => {
         placeholder="Describe your feelings..."
       />
       <button
+        disabled={isLoading}
         onClick={handleSubmit}
         className="w-full max-w-md px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300">
-        Submit
+        {isLoading ? "Loading..." : "Submit"}
       </button>
 
       {feedback && <p className="mt-4 text-green-600">{feedback}</p>}

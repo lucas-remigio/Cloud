@@ -20,7 +20,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
-        if: secrets.SSH_KNOWN_HOSTS != ''
+        if: ${{ secrets.SSH_KNOWN_HOSTS != '' }}
 
       - name: Deploy via SSH
         run: |

@@ -19,9 +19,9 @@ services:
       - OPEN_AI_KEY=${OPEN_AI_KEY}
       - DATABASE_URI=database
       - ATLAS_URI=${ATLAS_URI}
-    depends_on:
-      - database
-    entrypoint: [ "wait-for-it.sh", "database:27017", "--", "npm", "start" ]
+    # depends_on:
+    #   - database
+    # entrypoint: [ "wait-for-it.sh", "database:27017", "--", "npm", "start" ]
 
   sockets:
     build:

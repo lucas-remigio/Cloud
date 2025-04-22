@@ -20,8 +20,8 @@ services:
       - backend
       - sockets
     environment:
-      - BACKEND_URL=${BACKEND_URL}
-      - WEBSOCKET_URL=${WEBSOCKET_URL}
+      - NEXT_PUBLIC_BACKEND_URL=${BACKEND_URL}
+      - NEXT_PUBLIC_WEBSOCKET_URL=${WEBSOCKET_URL}
 
   backend:
     build:

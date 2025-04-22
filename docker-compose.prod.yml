@@ -19,6 +19,9 @@ services:
     depends_on:
       - backend
       - sockets
+    environment:
+      - BACKEND_URL=${BACKEND_URL}
+      - SOCKETS_URL=${WEBSOCKET_URL}
 
   backend:
     build:

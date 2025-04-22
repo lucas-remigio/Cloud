@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { MoodResponse } from "./message_types";
+import { backend_url } from "./connections";
 
 const Home: React.FC = () => {
   const [feelings, setFeelings] = useState("");
@@ -26,7 +27,7 @@ const Home: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/api/moods", {
+      const response = await fetch(backend_url + "/api/moods", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

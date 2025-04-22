@@ -21,7 +21,7 @@ services:
       - sockets
     environment:
       - BACKEND_URL=${BACKEND_URL}
-      - SOCKETS_URL=${WEBSOCKET_URL}
+      - WEBSOCKET_URL=${WEBSOCKET_URL}
 
   backend:
     build:

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -9,7 +9,7 @@ import {
   MessageCreation,
   MessageResponse,
 } from "@/app/message_types";
-import { backend_url } from "@/app/connections";
+import { backend_url, websocket_url } from "@/app/connections";
 
 export default function FeelingMessages() {
   const params = useParams();
@@ -21,6 +21,7 @@ export default function FeelingMessages() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [creating, setCreating] = useState(false);
+  const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     // Retrieve the feedback message from localStorage if available
@@ -38,6 +39,32 @@ export default function FeelingMessages() {
         console.error("Error parsing stored feeling:", error);
       }
     }
+
+    // join the websocket room for this feeling
+    socketRef.current = new WebSocket(
+      `${websocket_url}/messages/${encodeURIComponent(feeling)}`
+    );
+
+    socketRef.current.addEventListener("open", () => {
+      console.log("Connected to WebSocket server for feeling:", feeling);
+    });
+
+    socketRef.current.addEventListener("message", (event) => {
+      try {
+        // Assuming the server sends a JSON encoded message
+        const receivedMessage: Message = JSON.parse(event.data);
+        console.log("Received WS message: ", receivedMessage);
+        // Update state: Add the new message if it doesn't already exist
+        setMessages((prevMessages) => {
+          if (prevMessages.find((m) => m._id === receivedMessage._id)) {
+            return prevMessages;
+          }
+          return [receivedMessage, ...prevMessages];
+        });
+      } catch (err) {
+        console.error("Error parsing WS message", err);
+      }
+    });
 
     // Fetch messages based on the feeling
     fetchMessages();
@@ -102,18 +129,20 @@ export default function FeelingMessages() {
         setMessages([data.message, ...messages]);
         // The creation returns the created message so we can just add it to the list of messages
         setCreating(false);
-        // if (
-        //   socketRef.current &&
-        //   socketRef.current.readyState === WebSocket.OPEN
-        // ) {
-        //   socketRef.current.send(JSON.stringify(data.message));
-        // }
+        if (
+          socketRef.current &&
+          socketRef.current.readyState === WebSocket.OPEN
+        ) {
+          socketRef.current.send(JSON.stringify(data.message));
+        }
       })
       .catch((err) => {
         setError(err);
         setCreating(false);
       });
   };
+
+  
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -216,7 +245,6 @@ export default function FeelingMessages() {
             </div>
           )}
         </div>
-       
       </div>
 
       <div className="flex justify-between">

@@ -3,6 +3,7 @@ export type Message = {
   title: string;
   body: string;
   created_at: Date;
+  category: string;
 };
 
 export type MessageCreation = {

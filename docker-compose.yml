@@ -18,6 +18,7 @@ services:
     environment:
       - OPEN_AI_KEY=${OPEN_AI_KEY}
       - DATABASE_URI=database
+      - ATLAS_URI=${ATLAS_URI}
     depends_on:
       - database
     entrypoint: [ "wait-for-it.sh", "database:27017", "--", "npm", "start" ]
@@ -28,13 +29,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - 3002:3002
-
-  database:
-    image: mongo
-    ports:
-      - 27017:27017
-    volumes:
-      - ./mongodb_data:/data/db
+  # database:
+  #   image: mongo
+  #   ports:
+  #     - 27017:27017
+  #   volumes:
+  #     - ./mongodb_data:/data/db
 
 volumes:
   mongodb_data:

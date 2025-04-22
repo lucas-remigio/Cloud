@@ -6,12 +6,6 @@ export async function sendMessage(req, res) {
     // get the category from the body
     const { category } = req.body;
 
-    if (!category) {
-      return res.status(400).json({
-        message: "Category is required",
-      });
-    }
-
     const message = await getMessageOpenAI(category);
 
     if (!message) {
